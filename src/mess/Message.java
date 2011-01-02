@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Dostarczaj±ca obs³ugê komunikatów niezale¿nych od jêzyka
+ * DostarczajÄ…ca obsÅ‚ugÄ™ komunikatÃ³w niezaleÅ¼nych od jÄ™zyka
  */
 public enum Message {
 	usage,
@@ -22,63 +22,75 @@ public enum Message {
 	static{
 		refresh();
 	}
+
 	/**
-	 * Pobiera tre¶æ komunikatu dla którego kluczem jest <code>name</code>
-	 * @param name klucz komunikatu
-	 * @return tre¶æ komunikatu lub missing param je¿eli brak tre¶ci
+	 * Pobiera treÅ›Ä‡ komunikatu dla ktÃ³rego kluczem jest <code>name</code>
+	 * 
+	 * @param name
+	 *            klucz komunikatu
+	 * @return treÅ›Ä‡ komunikatu lub missing param jeÅ¼eli brak treÅ›ci
 	 */
-	public static String get(Enum<?> en, String defMessage){
+	public static String get(final Enum<?> en, final String defMessage){
 		return get(en.name(), defMessage);
 	}
+
 	/**
-	 * Pobiera tre¶æ komunikatu dla którego kluczem jest <code>name</code>
-	 * @param name klucz komunikatu
-	 * @return tre¶æ komunikatu lub missing param je¿eli brak tre¶ci
+	 * Pobiera treÅ›Ä‡ komunikatu dla ktÃ³rego kluczem jest <code>name</code>
+	 * 
+	 * @param name
+	 *            klucz komunikatu
+	 * @return treÅ›Ä‡ komunikatu lub missing param jeÅ¼eli brak treÅ›ci
 	 */
-	public static String get(String name, String defMessage){
+	public static String get(String name, final String defMessage){
 		name = name.replaceAll("_", ".");
 		if(!locale.equals(Locale.getDefault())){
 			refresh();
 		}
-		if(rb!=null && rb.containsKey(name)){
+		if((rb!=null) && rb.containsKey(name)){
 			return rb.getString(name);
 		}
 		return (defMessage!=null)?defMessage:MISSING + name;
 	}
-	
+
 	/**
-	 * Zaczytuje tre¶ci komunikatów z pliku message.properties
+	 * Zaczytuje treÅ›ci komunikatÃ³w z pliku message.properties
 	 */
 	private static void refresh(){
 		try{
 			rb = ResourceBundle.getBundle(System.getProperty("message", "message"));
-		}catch(Exception e){e.printStackTrace();}
+		}catch(final Exception e){e.printStackTrace();}
 	}
 	boolean exists(){
-		return rb != null && rb.containsKey(name().replaceAll("_", "."));
+		return (rb != null) && rb.containsKey(name().replaceAll("_", "."));
 	}
 	@Override
 	public String toString() {
 		return get(this, null);
 	}
+
 	/**
-	 * Formatuje tre¶æ komunikatu wed³ug warto¶ci parametrów
-	 * @param params parametry dla kumunikatu
-	 * @return sformatowana tre¶æ komunikatu lub missing param je¿eli brak tre¶ci
+	 * Formatuje treÅ›Ä‡ komunikatu wedÅ‚ug wartoÅ›ci parametrÃ³w
+	 * 
+	 * @param params
+	 *            parametry dla kumunikatu
+	 * @return sformatowana treÅ›Ä‡ komunikatu lub missing param jeÅ¼eli brak
+	 *         treÅ›ci
 	 * @see java.text.MessageFormat#format(String, Object...)
 	 */
-	public String format(Object... params){
+	public String format(final Object... params){
 		mf.applyPattern(toString());
 		return mf.format(params);
 	}
+
 	/**
-	 * Tworzy instancjê wyj±tku IllegalArgumentException z informacj±
-	 * równ± sformatowanej tre¶ci komunikatu wed³ug warto¶ci parametrów.
-	 *
-	 * @param params Parametry dla komunikatu.
+	 * Tworzy instancjÄ™ wyjÄ…tku IllegalArgumentException z informacjÄ™ rÃ³wnÄ…
+	 * sformatowanej treÅ›ci komunikatu wedÅ‚ug wartoÅ›ci parametrÃ³w.
+	 * 
+	 * @param params
+	 *            Parametry dla komunikatu.
 	 * @see #format(Object...)
 	 */
-	public IllegalArgumentException illegalArgument(Object... params) {
+	public IllegalArgumentException illegalArgument(final Object... params) {
 		return new IllegalArgumentException(format(params));
 	}
 }
