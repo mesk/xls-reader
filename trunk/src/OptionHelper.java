@@ -25,11 +25,11 @@ public enum OptionHelper {
 	private boolean hasArg = false;
 	private String argName = null;
 	private char withValueSeparator = 0;
-	private OptionHelper(String description){
+	private OptionHelper(final String description){
 		this.description = description;
 		
 	}
-	private OptionHelper(String description, String longOpt, boolean hasArg, String argName, char withValueSeparator){
+	private OptionHelper(final String description, final String longOpt, final boolean hasArg, final String argName, final char withValueSeparator){
 		this(description);
 		this.longOpt = longOpt;
 		this.hasArg = hasArg;
@@ -54,7 +54,7 @@ public enum OptionHelper {
 	private static Options options = new Options();
 	private static CommandLine line = null;
 	
-	private static void addOption(OptionHelper oh){
+	private static void addOption(final OptionHelper oh){
 		if(oh.getLongOpt()!=null){
 			OptionBuilder.withLongOpt( oh.getLongOpt() );
 		}
@@ -71,8 +71,8 @@ public enum OptionHelper {
 		return line.getArgList();
 	}
 	public static Options getOptions(){
-		if(options == null || options.getOptions().size()==0){
-			for(OptionHelper oh : values()){
+		if((options == null) || (options.getOptions().size()==0)){
+			for(final OptionHelper oh : values()){
 				addOption(oh);
 			}
 		}
@@ -91,16 +91,16 @@ public enum OptionHelper {
 	public String getOptionValue(){
 		return line.getOptionValue(name());
 	}
-	public String getOptionValue(String defaultValue){
+	public String getOptionValue(final String defaultValue){
 		return line.getOptionValue(name(), null);
 	}
 	public String[] getOptionValues(){
 		String[] values = line.getOptionValues(name());
-		if(values != null && withValueSeparator()>0){
-			List<String> tmp = new ArrayList<String>();
-			for(String value : values){
-				String[] sValues = value.split(String.valueOf(withValueSeparator));
-				for(String sValue : sValues){
+		if((values != null) && (withValueSeparator()>0)){
+			final List<String> tmp = new ArrayList<String>();
+			for(final String value : values){
+				final String[] sValues = value.split(String.valueOf(withValueSeparator));
+				for(final String sValue : sValues){
 					if(!tmp.contains(sValue.trim())){
 						tmp.add(sValue.trim());
 					}
@@ -111,35 +111,35 @@ public enum OptionHelper {
 		return values; 
 	}
 	public List<Integer> getValues(){
-		List<Integer> sheets = new ArrayList<Integer>();
-		String[] vs = getOptionValues();
+		final List<Integer> sheets = new ArrayList<Integer>();
+		final String[] vs = getOptionValues();
 		if(vs != null){
-			for(String v : vs){
+			for(final String v : vs){
 				try{
 					sheets.add(Integer.parseInt(v));
-				}catch(NumberFormatException nfe){
+				}catch(final NumberFormatException nfe){
 					return Collections.emptyList();
 				}
 			}
 		}
 		return sheets;
 	}
-	public static void parse(String[] args){
+	public static void parse(final String[] args){
 		// create the parser
-	    CommandLineParser parser = new GnuParser();
+	    final CommandLineParser parser = new GnuParser();
 		try {
 			// parse the command line arguments
 	        line = parser.parse( getOptions(), args );
-		}catch( ParseException exp ) {
+		}catch( final ParseException exp ) {
 			//oops, something went wrong
 			System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
 			System.exit(-1);
 		}
 	}
-	public static void printHelp(String cmdLineSyntax){
-		if(help.hasOption()){
+	public static void printHelp(final String cmdLineSyntax){
+		if (help.hasOption() || (line.getArgList().size() == 0)) {
 			// automatically generate the help statement
-			HelpFormatter formatter = new HelpFormatter();
+			final HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp( cmdLineSyntax , getOptions() );
 			System.exit(0);
 		}
